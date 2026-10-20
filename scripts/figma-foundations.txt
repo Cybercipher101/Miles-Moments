@@ -1,0 +1,51 @@
+// Figma Plugin API source. Run with use_figma, not Node.
+const createdNodeIds=[];
+const mark=n=>(createdNodeIds.push(n.id),n);
+const rgb=hex=>({r:parseInt(hex.slice(1,3),16)/255,g:parseInt(hex.slice(3,5),16)/255,b:parseInt(hex.slice(5,7),16)/255});
+await Promise.all([{family:'Manrope',style:'Regular'},{family:'Manrope',style:'Bold'},{family:'DM Serif Display',style:'Regular'}].map(f=>figma.loadFontAsync(f)));
+// Adapted from figma-generate-library/scripts/createVariableCollection.js.
+async function createVariableCollection(name,modeNames){const collection=figma.variables.createVariableCollection(name);collection.renameMode(collection.modes[0].modeId,modeNames[0]);return {collection,modeIds:{[modeNames[0]]:collection.modes[0].modeId}};}
+const page=figma.root.children.find(p=>p.name==='Miles & Moments · Screens and foundations')||mark(figma.createPage());page.name='Miles & Moments · Screens and foundations';await figma.setCurrentPageAsync(page);
+const {collection:primitive,modeIds:pm}=await createVariableCollection('M&M / Primitives',['Value']);
+const {collection:semantic,modeIds:sm}=await createVariableCollection('M&M / Semantic',['Light']);
+const vars={};
+for(const [name,hex] of Object.entries({sky:'#BDE8F3',pink:'#A62963','pink-dark':'#84204F',ink:'#243D3E',muted:'#617073',paper:'#FCFBF8',white:'#FFFFFF',line:'#E3E6E2',wash:'#EDF6F6'})){
+ const pv=figma.variables.createVariable('palette/'+name,primitive,'COLOR');pv.scopes=[];pv.setValueForMode(pm.Value,{...rgb(hex),a:1});pv.setVariableCodeSyntax('WEB',`var(--${name})`);
+ const v=figma.variables.createVariable('color/'+name,semantic,'COLOR');v.scopes=['FRAME_FILL','SHAPE_FILL','TEXT_FILL','STROKE_COLOR'];v.setValueForMode(sm.Light,{type:'VARIABLE_ALIAS',id:pv.id});v.setVariableCodeSyntax('WEB',`var(--${name})`);vars[name]=v;
+}
+for(const [name,value,scope] of [['space-sm',8,'GAP'],['space-md',16,'GAP'],['space-lg',24,'GAP'],['space-xl',48,'GAP'],['radius',20,'CORNER_RADIUS'],['radius-sm',8,'CORNER_RADIUS']]){
+ const v=figma.variables.createVariable(name,semantic,'FLOAT');v.scopes=[scope];v.setValueForMode(sm.Light,value);v.setVariableCodeSyntax('WEB',`var(--${name})`);vars[name]=v;
+}
+const paint=name=>figma.variables.setBoundVariableForPaint({type:'SOLID',color:rgb('#000000')},'color',vars[name]);
+const styles={};
+for(const [name,family,size,style,line] of [['Display','DM Serif Display',68,'Regular',75],['Heading','DM Serif Display',42,'Regular',49],['Section','DM Serif Display',30,'Regular',36],['Body','Manrope',14,'Regular',24],['Label','Manrope',11,'Bold',17],['Small','Manrope',10,'Regular',16]]){
+ const s=figma.createTextStyle();s.name='M&M / '+name;s.fontName={family,style};s.fontSize=size;s.lineHeight={unit:'PIXELS',value:line};styles[name]=s.id;
+}
+const text=(parent,value,style='Body',color='ink',width=400)=>{const n=mark(figma.createText());n.name=value.slice(0,50);n.fontName=style==='Display'||style==='Heading'||style==='Section'?{family:'DM Serif Display',style:'Regular'}:{family:'Manrope',style:style==='Label'?'Bold':'Regular'};n.characters=value;n.textStyleId=styles[style];n.fills=[paint(color)];n.resize(width,10);n.textAutoResize='HEIGHT';parent.appendChild(n);return n;};
+const auto=(parent,name,dir='VERTICAL',width=400,pad=24)=>{const n=mark(figma.createAutoLayout(dir));n.name=name;n.resize(width,100);n.primaryAxisSizingMode=dir==='VERTICAL'?'AUTO':'FIXED';n.counterAxisSizingMode=dir==='VERTICAL'?'FIXED':'AUTO';n.itemSpacing=16;n.paddingLeft=n.paddingRight=n.paddingTop=n.paddingBottom=pad;n.fills=[];if(parent)parent.appendChild(n);return n;};
+const board=auto(page,'00 / Brand & reusable components','VERTICAL',1440,48);board.x=200;board.y=-2200;board.fills=[paint('paper')];
+text(board,'Miles & Moments','Display','ink',1250);text(board,'GO PLACES. FEEL MORE.  /  HTML · CSS · JAVASCRIPT','Label','pink',1250);
+text(board,'An expressive travel journal, with a practical travel desk. Original imagery, calm movement, and room to explore.','Body','muted',1100);
+const swatches=auto(board,'Brand palette','HORIZONTAL',1300,0);
+for(const name of ['sky','pink','ink','paper','wash']){const sw=auto(swatches,name,'VERTICAL',220,20);sw.fills=[paint(name)];sw.cornerRadius=8;text(sw,name,'Label',name==='pink'||name==='ink'?'white':'ink',170);}
+const buttonVariants=[];
+for(const style of ['Primary','Secondary'])for(const state of ['Default','Hover','Disabled']){
+ const c=mark(figma.createComponent());c.name=`Style=${style}, State=${state}`;c.resize(190,48);c.layoutMode='HORIZONTAL';c.primaryAxisAlignItems='CENTER';c.counterAxisAlignItems='CENTER';c.setBoundVariable('cornerRadius',vars['radius-sm']);c.fills=[paint(style==='Secondary'?'paper':state==='Hover'?'pink-dark':'pink')];c.strokes=style==='Secondary'?[paint('line')]:[];if(state==='Disabled')c.opacity=.4;const t=text(c,'Explore the journey','Label',style==='Primary'?'white':'ink',160);t.textAlignHorizontal='CENTER';c.addComponentProperty('Label','TEXT','Explore the journey');const prop=Object.keys(c.componentPropertyDefinitions)[0];t.componentPropertyReferences={characters:prop};buttonVariants.push(c);
+}
+const buttonSet=mark(figma.combineAsVariants(buttonVariants,page));buttonSet.name='M&M / Button';buttonSet.description='Primary and secondary actions. Default, hover and disabled states. Minimum 48px touch target.';buttonSet.layoutMode='NONE';buttonVariants.forEach((c,i)=>{c.x=24+(i%3)*214;c.y=24+Math.floor(i/3)*72;});buttonSet.resize(690,168);board.appendChild(buttonSet);
+const componentRow=auto(board,'Reusable UI','HORIZONTAL',1300,0);componentRow.counterAxisAlignItems='MIN';
+function component(name,w){const c=mark(figma.createComponent());c.name='M&M / '+name;c.resize(w,100);c.layoutMode='VERTICAL';c.primaryAxisSizingMode='AUTO';c.itemSpacing=12;c.paddingLeft=c.paddingRight=c.paddingTop=c.paddingBottom=20;c.fills=[paint('white')];c.strokes=[paint('line')];c.setBoundVariable('cornerRadius',vars.radius);c.setBoundVariable('itemSpacing',vars['space-md']);c.description=name+' component matching the vanilla HTML/CSS implementation.';componentRow.appendChild(c);return c;}
+const input=component('Field',280);text(input,'Email address','Label','ink',240);const value=text(input,'you@example.com','Body','muted',240);input.addComponentProperty('Value','TEXT','you@example.com');value.componentPropertyReferences={characters:Object.keys(input.componentPropertyDefinitions)[0]};
+const card=component('Destination card',300);const photo=mark(figma.createRectangle());photo.name='Destination photo';photo.resize(260,180);photo.cornerRadius=12;photo.fills=[{type:'IMAGE',imageHash:'f62092a9ed0006c08a38f631a8d07f471e063a87',scaleMode:'FILL'}];card.appendChild(photo);text(card,'INDONESIA · 6 DAYS','Small','muted',260);const name=text(card,'Bali','Section','ink',260);card.addComponentProperty('Name','TEXT','Bali');name.componentPropertyReferences={characters:Object.keys(card.componentPropertyDefinitions)[0]};text(card,'Find your slow','Body','muted',260);text(card,'₹42,900 / person                    →','Label','ink',260);
+const booking=component('Booking summary',280);text(booking,'YOUR NEXT CHAPTER','Label','pink',240);text(booking,'Bali discovery','Section','ink',240);text(booking,'₹42,900 / person','Body','ink',240);text(booking,'6 days · Boutique stays · Transfers','Small','muted',240);const bi=mark(buttonVariants[0].createInstance());booking.appendChild(bi);
+const controls=component('Gallery controls',300);controls.layoutMode='HORIZONTAL';text(controls,'‹    ●  ○  ○       1 / 3      ▶ Play    ›','Label','ink',260);
+const nav=component('Navigation',1200);board.appendChild(nav);
+text(nav,'Miles & Moments      Home       Destinations       Stays       Flights       My itinerary       Gallery','Body','ink',1120);
+const wrappers={};
+const names=['Home','Authentication','Destination explorer','Destination detail','Booking','Itinerary','Administration'];
+for(let i=0;i<names.length;i++){
+ for(const mobile of [false,true]){
+  const w=auto(page,`${String(i+1).padStart(2,'0')} / ${names[i]} / ${mobile?'Mobile 390':'Desktop 1440'}`,'VERTICAL',mobile?390:1440,0);w.x=200+i*1900+(mobile?1480:0);w.y=mobile?0:0;w.itemSpacing=0;w.fills=[paint('paper')];w.clipsContent=true;wrappers[names[i]+(mobile?' Mobile':' Desktop')]=w.id;
+ }
+}
+return {createdNodeIds,mutatedNodeIds:[figma.root.id],pageId:page.id,boardId:board.id,wrappers,variables:Object.fromEntries(Object.entries(vars).map(([k,v])=>[k,v.id])),styles,components:{button:buttonVariants[0].id,secondary:buttonVariants[3].id,field:input.id,card:card.id,booking:booking.id,controls:controls.id,nav:nav.id},collections:[primitive.id,semantic.id]};

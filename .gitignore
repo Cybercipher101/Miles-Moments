@@ -1,0 +1,11 @@
+node_modules/
+test-results/
+playwright-report/
+.cache/
+.env
+.env.*
+!.env.example
+.DS_Store
+*.log
+.openai/
+dist/assets/images/*.png

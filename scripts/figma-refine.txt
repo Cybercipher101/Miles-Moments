@@ -1,0 +1,51 @@
+// Run after foundations and screens; STATE contains docs/figma-state.json.
+const page=await figma.getNodeByIdAsync(STATE.pageId);await figma.setCurrentPageAsync(page);
+await Promise.all([{family:'Manrope',style:'Regular'},{family:'Manrope',style:'Bold'},{family:'DM Serif Display',style:'Regular'}].map(f=>figma.loadFontAsync(f)));
+const made=[],changed=[],mark=n=>(made.push(n.id),n);
+const vars=Object.fromEntries(await Promise.all(Object.entries(STATE.variables).map(async([k,id])=>[k,await figma.variables.getVariableByIdAsync(id)])));
+const paint=name=>figma.variables.setBoundVariableForPaint({type:'SOLID',color:{r:0,g:0,b:0}},'color',vars[name]);
+const auto=(p,name,w,dir='VERTICAL',pad=0,bg=null)=>{const n=mark(figma.createAutoLayout(dir));n.name=name;n.resize(w,100);n.primaryAxisSizingMode=dir==='VERTICAL'?'AUTO':'FIXED';n.counterAxisSizingMode=dir==='VERTICAL'?'FIXED':'AUTO';n.itemSpacing=24;n.paddingLeft=n.paddingRight=n.paddingTop=n.paddingBottom=pad;n.fills=bg?[paint(bg)]:[];p.appendChild(n);return n;};
+const text=(p,value,w,size=16,serif=false,color='ink')=>{const n=mark(figma.createText());n.fontName={family:serif?'DM Serif Display':'Manrope',style:'Regular'};n.characters=value;n.fontSize=size;n.lineHeight={unit:'PERCENT',value:serif?115:160};n.fills=[paint(color)];n.resize(w,10);n.textAutoResize='HEIGHT';p.appendChild(n);return n;};
+const button=await figma.getNodeByIdAsync(STATE.components.button);
+for(const mobile of [false,true]){
+ const home=await figma.getNodeByIdAsync(STATE.wrappers['Home '+(mobile?'Mobile':'Desktop')]);const width=mobile?346:1300;
+ if(!home.children.some(n=>n.name==='Travel stories')){
+  const reviews=auto(home,'Travel stories',home.width,'VERTICAL',mobile?22:70);
+  text(reviews,'THE TRAVEL JOURNAL',width,12,false,'pink');text(reviews,'Good places.\nBetter stories.',width,40,true);
+  const row=auto(reviews,'Sample traveler voices',width,mobile?'VERTICAL':'HORIZONTAL');
+  for(const [name,quote] of [['Ananya','The mix of quiet mornings and little adventures is exactly how I like to travel.'],['Kabir','A scenic train, a mountain trail, and time to slow down. My kind of itinerary.'],['Meera','The craft workshop would be the first thing on my list. Such a lovely way to discover a city.']]){
+   const c=auto(row,name+' / sample review',mobile?346:417,'VERTICAL',24,'white');c.cornerRadius=16;c.strokes=[paint('line')];
+   text(c,'★★★★★',c.width-48,16,false,'pink');text(c,'“'+quote+'”',c.width-48,15);text(c,name+' · Sample review',c.width-48,12);
+  }
+  const index=home.children.findIndex(n=>n.name==='Contact at the end of the journey');home.insertChild(index,reviews);
+  const outer=auto(home,'A new chapter',home.width,'VERTICAL',mobile?22:70);
+  const banner=auto(outer,'Sky to rose invitation',width,'VERTICAL',mobile?28:45);banner.cornerRadius=20;
+  banner.fills=[{type:'GRADIENT_LINEAR',gradientTransform:[[1,0,0],[0,1,0]],gradientStops:[{position:0,color:{r:.741,g:.91,b:.953,a:1}},{position:1,color:{r:.9,g:.724,b:.8,a:1}}]}];
+  text(banner,'THE WORLD CAN WAIT. YOUR CURIOSITY SHOULDN’T.',banner.width-(mobile?56:90),11,false,'pink');text(banner,'Somewhere new.\nSomething unforgettable.',banner.width-(mobile?56:90),mobile?34:44,true);
+  const b=mark(button.createInstance());banner.appendChild(b);b.setProperties({[Object.keys(b.componentProperties).find(k=>k.startsWith('Label'))]:'Start exploring'});
+  home.insertChild(home.children.findIndex(n=>n.name==='Contact at the end of the journey'),outer);
+ }
+ const hero=home.findOne(n=>n.type==='TEXT'&&n.characters.startsWith('More than miles.'));
+ if(hero){const start=hero.characters.indexOf('Moments');hero.setRangeFills(start,start+7,[paint('pink')]);changed.push(hero.id);}
+}
+// Give repeated screen navigation a genuine reusable component per viewport.
+const navComponents={};
+for(const mobile of [false,true]){
+ const name='M&M / Navigation / '+(mobile?'Mobile':'Desktop');let component=page.findOne(n=>n.type==='COMPONENT'&&n.name===name);
+ if(!component){const source=(await figma.getNodeByIdAsync(STATE.wrappers['Home '+(mobile?'Mobile':'Desktop')])).children.find(n=>n.name==='Navigation');component=mark(figma.createComponent());component.name=name;component.resize(source.width,source.height);component.layoutMode='HORIZONTAL';component.primaryAxisSizingMode='FIXED';component.counterAxisSizingMode='AUTO';component.paddingTop=component.paddingBottom=mobile?20:24;component.paddingLeft=component.paddingRight=mobile?20:45;component.itemSpacing=source.itemSpacing;component.counterAxisAlignItems='CENTER';component.fills=[paint('paper')];for(const child of source.children){const c=child.clone();component.appendChild(c);made.push(c.id,...('findAll'in c?c.findAll(()=>true).map(x=>x.id):[]));}page.appendChild(component);component.x=1800;component.y=mobile?-1600:-1900;}
+ navComponents[mobile?'mobile':'desktop']=component.id;
+ for(const [name,id] of Object.entries(STATE.wrappers).filter(([name])=>name.endsWith(mobile?'Mobile':'Desktop'))){const screen=await figma.getNodeByIdAsync(id);const old=screen.children.find(n=>n.name==='Navigation'&&n.type==='FRAME');if(old){const index=screen.children.indexOf(old),instance=mark(component.createInstance());screen.insertChild(index,instance);changed.push(old.id,screen.id);old.remove();}}
+}
+// Add explicit login compositions alongside the registration screens.
+const addedWrappers={};
+for(const mobile of [false,true]){
+ const key='Login '+(mobile?'Mobile':'Desktop');let screen=page.children.find(n=>n.name===key);
+ if(!screen){screen=(await figma.getNodeByIdAsync(STATE.wrappers['Authentication '+(mobile?'Mobile':'Desktop')])).clone();screen.name=key;screen.x=13500+(mobile?1480:0);screen.y=0;made.push(screen.id,...screen.findAll(()=>true).map(n=>n.id));
+  const field=screen.findAllWithCriteria({types:['INSTANCE']}).find(n=>n.findAllWithCriteria({types:['TEXT']}).some(t=>t.characters==='Your name'));if(field){changed.push(field.id);field.remove();}
+  for(const t of screen.findAllWithCriteria({types:['TEXT']})){if(t.characters==='Let the journey begin.')t.characters='Your next chapter awaits.';if(t.characters==='A few details, and a world of possibilities.')t.characters='Sign in to pick up where your wanderlust left off.';if(t.characters.startsWith('□ I understand'))t.characters='Traveler and administrator demo accounts are available.';}
+  const b=screen.findAllWithCriteria({types:['INSTANCE']}).find(n=>Object.values(n.componentProperties).some(p=>p.value==='Create my account'));if(b)b.setProperties({[Object.keys(b.componentProperties).find(k=>k.startsWith('Label'))]:'Sign in'});
+ }
+ addedWrappers[key]=screen.id;
+}
+for(const n of page.findAllWithCriteria({types:['TEXT']})){n.textAutoResize='HEIGHT';if(n.parent?.layoutMode&&n.parent.layoutMode!=='NONE')n.layoutSizingVertical='HUG';n.characters=n.characters;changed.push(n.id);}
+return {createdNodeIds:made,mutatedNodeIds:changed,navComponents,addedWrappers};
