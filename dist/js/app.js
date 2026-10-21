@@ -9,6 +9,8 @@ import {
   resetStorage,
   updateState,
   uid,
+  isGuest,
+  startGuest,
 } from "./store.js";
 import {
   safeReturn,
@@ -26,10 +28,27 @@ import {
   toast,
 } from "./actions.js";
 import { initGalleries, initRails, stopGalleries } from "./carousel.js";
+import { initMotion } from "./motion.js";
 const page = document.body.dataset.page;
+function enforceEntry() {
+  const auth = ["index", "login", "register"].includes(page);
+  const user = currentUser();
+  if (!auth && ((!user && !isGuest()) || (page === "bookings" && !user))) {
+    const next =
+      location.pathname.split("/").pop() + location.search + location.hash;
+    document.getElementById("app").replaceChildren();
+    location.replace(`login.html?next=${encodeURIComponent(next)}`);
+    return false;
+  }
+  return true;
+}
+window.addEventListener("pageshow", (event) => {
+  if (event.persisted) enforceEntry();
+});
 async function boot() {
   await seedDemo();
-  const auth = ["index", "login"].includes(page);
+  const auth = ["index", "login", "register"].includes(page);
+  if (!enforceEntry()) return;
   const renderers = {
     home: pages.homePage,
     destinations: pages.destinationsPage,
@@ -86,6 +105,7 @@ async function boot() {
   bindCommonActions();
   initGalleries();
   initRails();
+  initMotion();
   document.body.dataset.ready = "true";
 }
 function bindAuth() {
@@ -93,6 +113,18 @@ function bindAuth() {
   const next = safeReturn(
     new URLSearchParams(location.search).get("next") || "home.html",
   );
+  document.querySelector("[data-guest]").onclick = () => {
+    try {
+      startGuest();
+      const target = new URL(next, location.href);
+      target.searchParams.delete("activity");
+      location.href = /\/(bookings|admin)\.html$/.test(target.pathname)
+        ? "home.html"
+        : target.pathname + target.search + target.hash;
+    } catch (err) {
+      document.querySelector("#guest-status").textContent = err.message;
+    }
+  };
   document.querySelector("[data-password]").onclick = (ev) => {
     const input = form.elements.password;
     input.type = input.type === "password" ? "text" : "password";

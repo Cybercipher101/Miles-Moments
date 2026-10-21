@@ -1,6 +1,6 @@
 # Testing record
 
-Date: **20 October 2026**. Environment: Windows, Node 26.10.0, Playwright 1.64.1, bundled Chromium. Local preview: `http://localhost:5500`.
+Date: **21 October 2026**. Environment: Windows, Node 26.10.0, Playwright 1.64.1, bundled Chromium. Local preview: `http://localhost:5500`.
 
 ## Commands
 
@@ -20,14 +20,17 @@ Playwright starts the local server when required and keeps each test’s browser
 | Check | Result |
 | --- | --- |
 | Node core tests | 6 passed |
-| Source/resource checks | Passed: fourteen HTML entrypoints, eighteen images, JavaScript syntax |
-| Browser acceptance suite | 18 passed, 0 failed; final full run completed in 22.0 seconds |
-| Dependency audit | 0 known vulnerabilities at verification time |
-| Figma structural audit | Sixteen editable screens, 508 text nodes, 112 component instances |
+| Source/resource checks | Passed: fifteen HTML entrypoints, eighteen images, JavaScript syntax |
+| Browser acceptance suite | 23 passed, 0 failed on the final full run |
+| Dependency audit | 0 known vulnerabilities on 20 October; dependencies unchanged in this update |
+| Figma structural audit | Previous release: sixteen editable screens, 508 text nodes, 112 component instances; new UI not resynchronized |
 
 ## Browser coverage
 
 - Registration, duplicate email, incorrect password, logout, guest access, intended-page login return, traveler/admin separation.
+- Login-first index, separate registration, fresh direct-link entry checks, persistent guest choice across reloads and tabs, guest access to offers, and account-only package/hotel/flight forms and My Bookings. A guest choice from the My Bookings login returns Home.
+- Fully blocked guest storage reports an error without bypassing entry; unavailable demo-account storage leaves the entry screen usable.
+- Home chapter anchors and selected chapter, scroll reveal completion, immediate reduced-motion reveal, flight inspiration routes, and gallery chapter/immersive controls.
 - Destination keyword search, budget filters, empty/reset states, price sorting. Combined category/budget filters and original-data immutability also tested as pure functions.
 - Desktop hover playback, next image, manual pause, mobile visible playback, touch swipe, refresh persistence, keyboard arrows, reduced motion, immersive close/Escape.
 - Package, hotel, and flight booking; invalid dates and traveler counts; hotel room/night calculation; confirmation; cancellation; stored records.
@@ -37,11 +40,12 @@ Playwright starts the local server when required and keeps each test’s browser
 - Corrupt storage recovery and blocked-storage error explanation.
 - Every page loaded at **360, 390, 768, 1024, 1440px**: no unintended document-width overflow, one H1, no new-tab internal links, no page JavaScript exceptions, no broken loaded images.
 - Signed-in admin and booking dialogs fit the same five widths.
+- Home, Flights, and Gallery also fit all five widths with decorative motion enabled; the header Sign in action remains visible at every width.
 - All discovered internal links and all eighteen image assets return successfully.
 
 ## Visual inspection
 
-Reviewed desktop Home and mobile Home, registration, booking dialog, and administration screenshots. Form wrapping, image cropping, contrast surfaces, navigation, and focus visibility were inspected. Figma review identified and corrected collapsed text heights and horizontal container clipping.
+Reviewed refreshed desktop Home and Flights, mobile Login and Gallery, plus the existing booking and administration coverage. Screenshots for registration, flights, and gallery are included at 390 and 1440 pixels. Form wrapping, image cropping, navigation, and gallery control visibility were inspected. The earlier Figma review identified and corrected collapsed text heights and horizontal container clipping; this update changes browser code only.
 
 Saved browser evidence is in `docs/screenshots/`. Figma reference images and the node audit are in `docs/design/`.
 
@@ -53,6 +57,9 @@ Saved browser evidence is in `docs/screenshots/`. Figma reference images and the
 - Touch-event fixtures required a touch identifier; updated the fixture.
 - A refreshed manually paused gallery had no explicit initial playback state; initialization now sets the paused state and first slide.
 - Itinerary activity reordering and direct discovery-to-itinerary addition were completed and tested.
+- Fixed the editorial gallery's inherited aspect ratio, which initially caused horizontal overflow on narrower viewports.
+- Kept mobile Sign in visible when the older compact header rule hid filled buttons; moved journal numbering below the photo so it does not cover gallery controls.
+- Limited the full-width Home band's reveal to vertical movement to avoid overflow while the animation is pending.
 
 ## Limits of the evidence
 

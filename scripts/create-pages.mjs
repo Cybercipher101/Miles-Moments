@@ -1,7 +1,8 @@
 import fs from "node:fs/promises";
 const pages = {
-  index: "Create an account",
+  index: "Log in",
   login: "Log in",
+  register: "Create an account",
   home: "Go places. Feel more.",
   destinations: "Explore destinations",
   destination: "A closer look",
@@ -30,6 +31,7 @@ for (const [page, title] of Object.entries(pages)) {
   <link rel="preload" href="assets/fonts/Manrope.ttf" as="font" type="font/ttf" crossorigin>
   <link rel="preload" href="assets/fonts/DMSerifDisplay.ttf" as="font" type="font/ttf" crossorigin>
   <link rel="stylesheet" href="assets/styles.css">
+  <link rel="stylesheet" href="assets/experience.css">
   <script type="module" src="js/app.js"></script>
 </head>
 <body data-page="${page}">

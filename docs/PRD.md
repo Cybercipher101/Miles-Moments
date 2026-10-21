@@ -16,12 +16,12 @@ The administrator operates the same browser-local dataset. There is no remote se
 
 | Area | Required behavior |
 | --- | --- |
-| Entry | Registration and login first; guest escape; successful login returns Home or intended protected page |
+| Entry | Login first on index/login, separate registration, explicit remembered guest browsing; direct content links require an entry choice; successful login returns Home or intended page |
 | Discovery | Bali, Santorini, Switzerland, Kyoto, Maldives, Jaipur; information panels with separate activity carousels |
 | Search | Text, category, budget, and name/price/rating sorting; combined filters; empty state and reset |
 | Details | Same-tab destination and package pages, day plans, amenities, inclusions, exclusions, INR summaries |
 | Galleries | Three original images per destination; 2-second hover playback; visible mobile playback; swipe, controls, indicators, keyboard, immersive dialog |
-| Booking | Hotel date/guest search, flight route/date/cabin search, package booking, validation, consent, confirmation, persistence, cancellation |
+| Booking | Guest-visible offer searches; account-only booking forms and My Bookings; hotel date/guest and flight route/date/cabin search, validation, consent, confirmation, persistence, cancellation |
 | Itinerary | Account-specific destinations, days and activities; edit, reorder, complete, remove, reset, export text |
 | Community | Labeled sample reviews, user ratings and review submission |
 | Contact | Home’s final content section and standalone page; local inbox only; honest confirmation |
@@ -32,6 +32,8 @@ The administrator operates the same browser-local dataset. There is no remote se
 Responsive at 360, 390, 768, 1024, and 1440 pixels. Every content page provides Home navigation; links remain in the same tab. The page scrolls vertically; horizontal carousels accept independent touch/trackpad scrolling and buttons. Native forms have labels, focus indicators, understandable errors, and comfortable controls.
 
 Automatic gallery playback stops offscreen or in a hidden document. A manual pause persists for the gallery in the current tab, including refreshes, until Play is pressed. Reduced motion disables automatic playback and decorative transitions. Dialogs have visible close controls and Escape support.
+
+Home uses a scenic chapter navigation component and restrained scroll reveals. Flights and Gallery feature original destination imagery. Olive accents complement the blue/pink palette. Reduced motion immediately disables section movement and reveals pending content.
 
 ## Data and trust
 

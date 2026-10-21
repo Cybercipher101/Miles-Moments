@@ -2,7 +2,7 @@
 
 | Layer | Choice | Reason |
 | --- | --- | --- |
-| Markup | Semantic HTML5, fourteen entrypoints | Direct navigation and simple local hosting |
+| Markup | Semantic HTML5, fifteen entrypoints | Direct navigation and simple local hosting |
 | Styling | Plain CSS, custom properties, Grid/Flexbox, media queries | Shared visual tokens and responsive layouts |
 | Behavior | Vanilla JavaScript native modules | No framework or shipped dependency |
 | Persistence | localStorage, sessionStorage | Browser-local educational workflows |

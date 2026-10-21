@@ -1,6 +1,6 @@
 # Project memory
 
-Last updated: 20 October 2026.
+Last updated: 21 October 2026.
 
 ## Decisions to preserve
 
@@ -8,22 +8,24 @@ Last updated: 20 October 2026.
 - Frontend only: HTML, CSS, vanilla JavaScript native modules. No runtime framework.
 - Local preview only. Do not publish to GitHub Pages or Sites.
 - Dedicated checkout: `Miles-Moments` inside the traveling website workspace. Do not modify unrelated drive-level Git files.
-- Registration/login entry, guest browsing, same-tab links, Home navigation.
+- Login-first entry (index/login), separate register page, explicit persistent guest browsing, same-tab links, Home navigation. Direct content access requires account or guest choice; booking forms and My Bookings require an account.
 - Six destinations: Bali, Santorini, Switzerland, Kyoto, Maldives, Jaipur.
 - Eighteen original generated images; reused six initial images plus twelve new activity scenes.
 - Local DM Serif Display and Manrope with font licenses.
-- Sky `#BDE8F3`, dark pink `#A62963`, ivory, dark ink.
+- Sky `#BDE8F3`, dark pink `#A62963`, olive `#626C3E`, ivory, dark ink.
 - Horizontal destination panels and nested activity rails; preserve normal vertical scrolling.
 - Demo accounts, bookings, itineraries, reviews, package overrides, and messages stay browser-local.
 - No real reservations, payments, email, tickets, external booking integrations, or shared database.
 
 ## Current implementation
 
-Fourteen entrypoints; shared UI/data/storage/auth modules; package/hotel/flight bookings; itinerary add/edit/reorder/completion/export; reviews; Home-end contact and dedicated contact page; local admin dashboard.
+Fifteen entrypoints; shared UI/data/storage/auth modules; package/hotel/flight bookings; itinerary add/edit/reorder/completion/export; reviews; Home-end contact and dedicated contact page; local admin dashboard.
 
 Demo credentials are intentionally public and documented in README. Registration creates travelers. Browser-only admin checks demonstrate role behavior and cannot secure production data.
 
 Figma: `RhMcGbJ8l4bVz4xKMs9S78`, primary page `5:2`, sixteen screen compositions, reusable components and tokens. The outer provisional title could not be changed through the available connector/signed-out browser; see FIGMA.md.
+
+The 21 October update adds olive accents, Home chapter navigation and scroll reveals, a scenic flights page, and an editorial gallery. All use existing original imagery. The older Figma compositions have not been resynchronized with this update.
 
 ## Verification and maintenance
 

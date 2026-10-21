@@ -2,6 +2,15 @@ import { test, expect } from "@playwright/test";
 const ready = async (page, path) => {
   await page.goto(path);
   await expect(page.locator("body")).toHaveAttribute("data-ready", "true");
+  if (
+    page.url().includes("login.html?next=") &&
+    !/^\/(index|login|register|bookings)\.html/.test(path) &&
+    !(await page.getByRole("alert").count())
+  ) {
+    await page.getByRole("button", { name: "Continue as guest" }).click();
+    await expect(page).not.toHaveURL(/login.html/);
+    await expect(page.locator("body")).toHaveAttribute("data-ready", "true");
+  }
 };
 async function login(page, admin = false) {
   await ready(page, "/login.html");
@@ -80,7 +89,7 @@ test("activities add, reorder, complete, edit and remain scoped to their travele
   ).toBeChecked();
   await expect(firstDay.getByLabel("Day title")).toHaveValue("My arrival day");
   await page.getByRole("button", { name: "Sign out" }).click();
-  await ready(page, "/index.html");
+  await ready(page, "/register.html");
   await page.getByLabel("Your name").fill("Another Traveler");
   await page.getByLabel("Email address").fill("another@example.test");
   await page.getByLabel("Password", { exact: true }).fill("Another123!");
@@ -161,7 +170,9 @@ test("inactive traveler cannot sign in and removed packages cannot be booked", a
   await page.getByLabel("Email address").fill("traveler@miles.test");
   await page.getByLabel("Password", { exact: true }).fill("Travel123!");
   await page.getByRole("button", { name: "Sign in", exact: true }).click();
-  await expect(page.locator(".form-status")).toContainText("inactive");
+  await expect(page.locator("#auth-form .form-status")).toContainText(
+    "inactive",
+  );
   await ready(page, "/package.html?id=bali");
   await expect(page.getByText("That chapter isn’t here.")).toBeVisible();
   await expect(page.locator("[data-book-package]")).toHaveCount(0);
@@ -208,6 +219,7 @@ test("every linked local page and all original scenery assets return successfull
   const links = new Set();
   for (const route of [
     "index",
+    "register",
     "home",
     "destinations",
     "destination",

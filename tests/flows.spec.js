@@ -3,6 +3,15 @@ import fs from "node:fs/promises";
 const ready = async (page, path) => {
   await page.goto(path);
   await expect(page.locator("body")).toHaveAttribute("data-ready", "true");
+  if (
+    page.url().includes("login.html?next=") &&
+    !/^\/(index|login|register|bookings)\.html/.test(path) &&
+    !(await page.getByRole("alert").count())
+  ) {
+    await page.getByRole("button", { name: "Continue as guest" }).click();
+    await expect(page).not.toHaveURL(/login.html/);
+    await expect(page.locator("body")).toHaveAttribute("data-ready", "true");
+  }
 };
 async function signIn(page, admin = false) {
   await ready(page, "/login.html");
@@ -18,7 +27,7 @@ async function signIn(page, admin = false) {
 test("registration, duplicate email, incorrect password, protected return, and account isolation", async ({
   page,
 }) => {
-  await ready(page, "/index.html");
+  await ready(page, "/register.html");
   await page.getByLabel("Your name").fill("Test Traveler");
   await page.getByLabel("Email address").fill("test@example.test");
   await page.getByLabel("Password", { exact: true }).fill("Sample123!");
@@ -33,7 +42,7 @@ test("registration, duplicate email, incorrect password, protected return, and a
   ).toHaveLength(64);
   expect(JSON.stringify(stored)).not.toContain("Sample123!");
   await page.getByRole("button", { name: "Sign out" }).click();
-  await ready(page, "/index.html");
+  await ready(page, "/register.html");
   await page.getByLabel("Your name").fill("Duplicate");
   await page.getByLabel("Email address").fill("test@example.test");
   await page.getByLabel("Password", { exact: true }).fill("Sample123!");
@@ -48,7 +57,9 @@ test("registration, duplicate email, incorrect password, protected return, and a
   await page.getByLabel("Email address").fill("test@example.test");
   await page.getByLabel("Password", { exact: true }).fill("Wrong123!");
   await page.getByRole("button", { name: "Sign in", exact: true }).click();
-  await expect(page.locator(".form-status")).toContainText("incorrect");
+  await expect(page.locator("#auth-form .form-status")).toContainText(
+    "incorrect",
+  );
   await page.getByLabel("Password", { exact: true }).fill("Sample123!");
   await page.getByRole("button", { name: "Sign in", exact: true }).click();
   await expect(page).toHaveURL(/package.html\?id=bali/);
@@ -252,10 +263,12 @@ for (const width of [360, 390, 768, 1024, 1440]) {
   }) => {
     test.setTimeout(120000);
     await page.setViewportSize({ width, height: 900 });
+    await page.emulateMedia({ reducedMotion: "reduce" });
     const errors = [];
     page.on("pageerror", (e) => errors.push(e.message));
     for (const route of [
       "index",
+      "register",
       "login",
       "home",
       "destinations",
@@ -270,7 +283,13 @@ for (const width of [360, 390, 768, 1024, 1440]) {
       "contact",
       "admin",
     ]) {
+      if (route === "bookings") await signIn(page);
       await ready(page, `/${route}.html`);
+      if (["home", "gallery", "flights"].includes(route)) {
+        await expect(
+          page.locator(".nav-account").getByRole("link", { name: "Sign in" }),
+        ).toBeVisible();
+      }
       await page.evaluate(() => document.fonts.ready);
       expect(
         await page.evaluate(
@@ -289,13 +308,21 @@ for (const width of [360, 390, 768, 1024, 1440]) {
         );
       expect(broken).toEqual([]);
       if (
-        ["home", "index", "destinations", "itinerary"].includes(route) &&
+        [
+          "home",
+          "index",
+          "register",
+          "destinations",
+          "itinerary",
+          "flights",
+          "gallery",
+        ].includes(route) &&
         [390, 1440].includes(width)
       ) {
         await fs.mkdir("docs/screenshots", { recursive: true });
         await page.screenshot({
           path: `docs/screenshots/${route}-${width}.png`,
-          fullPage: true,
+          fullPage: !["flights", "gallery"].includes(route),
           animations: "disabled",
         });
       }

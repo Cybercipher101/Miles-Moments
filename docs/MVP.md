@@ -6,12 +6,12 @@ The MVP is a complete browser-local journey: discover a destination, inspect a p
 
 | Capability | Implementation |
 | --- | --- |
-| Identity | Traveler registration, seeded demo accounts, login/logout, intended-page return |
+| Identity | Login-first entry, separate registration, remembered guest browsing, account-only bookings, seeded demo accounts, logout, intended-page return |
 | Discovery | Six destinations and three images each, search/filter/sort, nested horizontal carousels |
 | Planning | Day plans, package details, editable itineraries and text export |
 | Reservations | Package, hotel, flight forms; itemized total; confirmation and cancellation |
 | Administration | Local users, packages, bookings, inbox |
-| Quality | Responsive layouts, keyboard controls, reduced motion, storage recovery, tests |
+| Quality | Responsive layouts, olive accents, scenic flights, photo journals, Home chapter transitions, keyboard controls, reduced motion, storage recovery, tests |
 | Handoff | Documentation, editable designs, local startup, repository source |
 
 ## Explicit exclusions

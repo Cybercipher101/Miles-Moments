@@ -3,8 +3,9 @@
 ## Traveler journey
 
 ```text
-Registration / Login
-  ├─ Explore as guest → Home
+Login first (index.html / login.html)
+  ├─ Create an account → register.html
+  ├─ Continue as guest → Home or requested browsing page
   ├─ Register traveler → Home
   └─ Sign in → intended page, or Home
 
@@ -17,6 +18,10 @@ Home → Destinations → Destination details → Package details
 Home / Footer → Gallery, Reviews, Contact, My Bookings, Admin
 ```
 
+## Entry and guest access
+
+Fresh direct links redirect to login before content renders. Continuing as guest stores a versioned browser preference; future browsing links remain accessible. Guests can inspect offers and search inventory, but cannot open booking forms or My Bookings. A guest choice from a My Bookings or Admin login return goes Home. Guest entry from an activity-add link opens the sample itinerary without saving that activity. Login returns to the requested page; account actions still require an active session. Signing out clears the guest choice.
+
 ## Protected actions
 
 Booking, adding an activity from discovery, saving an itinerary, adding a day, and posting a review require a session. The requested path and query are encoded in `login.html?next=...`. The return helper accepts only known local pages. A traveler never receives administrator controls.
@@ -26,7 +31,7 @@ Some guest itinerary edits can be explored temporarily. Signing in is required t
 ## Booking sequence
 
 1. Inspect an active package, or submit valid hotel/flight search criteria.
-2. Open the booking dialog in the same page.
+2. Sign in if needed, then open the booking dialog in the same page.
 3. Enter a traveler name, 1–8 travelers, and valid future dates.
 4. Review the total and acknowledge that the action is a local demonstration.
 5. Confirm. Save a local reference, account ID, price snapshot, and confirmed status.
@@ -44,6 +49,6 @@ Footer Admin demo → Admin sign-in → dashboard → Users / Bookings / Package
 
 ## Navigation and recovery
 
-Fourteen physical HTML files support direct loads. Content-page navigation includes Home. Native dialogs stay inside the current page. Unknown destination/package IDs show a recovery link. No internal link requests a new browser tab.
+Fifteen physical HTML files support direct loads. Content-page navigation includes Home. Native dialogs stay inside the current page. Unknown destination/package IDs show a recovery link. No internal link requests a new browser tab.
 
-Unreadable storage produces a recovery banner. Reset deletes only this project’s local dataset and session. If the browser blocks storage entirely, the user is told to enable it for localhost.
+Unreadable storage produces a recovery banner. Reset deletes this project’s local dataset, account session, and guest preference. Persistent guest storage falls back to a tab session if localStorage is blocked; if both are unavailable, entry shows a clear error. If the browser blocks storage entirely, the user is told to enable it for localhost.

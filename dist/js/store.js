@@ -1,4 +1,5 @@
 const KEY = "miles-moments:v1";
+const GUEST_KEY = "miles-moments:guest:v1";
 const empty = () => ({
   version: 1,
   users: [],
@@ -32,7 +33,7 @@ try {
 } catch {
   state = empty();
   storageError =
-    "Saved demo data could not be read. You can use a temporary session or reset local demo data.";
+    "Saved demo data could not be read. Reset local demo data or enable browser storage to save your changes.";
 }
 export const getState = () => structuredClone(state);
 export const storageStatus = () => storageError;
@@ -55,6 +56,8 @@ export function updateState(fn) {
 export function resetStorage() {
   try {
     localStorage.removeItem(KEY);
+    localStorage.removeItem(GUEST_KEY);
+    sessionStorage.removeItem(GUEST_KEY);
     sessionStorage.removeItem("mm-session");
     location.reload();
   } catch {
@@ -64,6 +67,38 @@ export function resetStorage() {
   }
 }
 export const uid = () => crypto.randomUUID();
+export function isGuest() {
+  for (const storage of ["localStorage", "sessionStorage"]) {
+    try {
+      if (window[storage].getItem(GUEST_KEY) === "guest") return true;
+    } catch {
+      /* Try session storage when persistent storage is unavailable. */
+    }
+  }
+  return false;
+}
+export function startGuest() {
+  for (const storage of ["localStorage", "sessionStorage"]) {
+    try {
+      window[storage].setItem(GUEST_KEY, "guest");
+      if (window[storage].getItem(GUEST_KEY) === "guest") return;
+    } catch {
+      /* The next storage option may still be available. */
+    }
+  }
+  throw new Error(
+    "Enable browser storage to continue as a guest, then try again.",
+  );
+}
+function clearGuest() {
+  for (const storage of ["localStorage", "sessionStorage"]) {
+    try {
+      window[storage].removeItem(GUEST_KEY);
+    } catch {
+      /* Already unavailable. */
+    }
+  }
+}
 export function currentUser() {
   try {
     return (
@@ -133,6 +168,7 @@ export async function login(email, password) {
       "This demo account is inactive. Contact the demo administrator.",
     );
   sessionStorage.setItem("mm-session", user.id);
+  clearGuest();
   return user;
 }
 export async function seedDemo() {
@@ -141,11 +177,18 @@ export async function seedDemo() {
     ["Alex Traveler", "traveler@miles.test", "Travel123!", "traveler"],
     ["Miles Admin", "admin@miles.test", "Admin123!", "admin"],
   ]) {
-    if (!state.users.some((u) => u.email === email))
-      await register(name, email, password, role);
+    if (!state.users.some((u) => u.email === email)) {
+      try {
+        await register(name, email, password, role);
+      } catch (error) {
+        if (storageError) return;
+        throw error;
+      }
+    }
   }
 }
 export function logout() {
   sessionStorage.removeItem("mm-session");
+  clearGuest();
   location.href = "login.html";
 }

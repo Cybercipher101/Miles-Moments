@@ -18,7 +18,7 @@ cd Miles-Moments
 npm start
 ```
 
-Open **http://localhost:5500**. The first page offers registration, login, and **Explore as guest**. No dependency installation or build is needed to run the website. Keep the terminal open; press `Ctrl+C` to stop.
+Open **http://localhost:5500**. The first page is **Log in**, with **Create an account** and **Continue as guest**. Fresh visitors must choose one before entering; direct content links also pass through this screen. No dependency installation or build is needed to run the website. Keep the terminal open; press `Ctrl+C` to stop.
 
 Use the local server rather than opening HTML files directly. Native modules and password hashing need an HTTP localhost or secure origin. If port 5500 is busy, stop the other server or set `PORT` before starting. Changing the port creates a separate browser storage origin.
 
@@ -35,7 +35,7 @@ These are public, fictional demo credentials:
 
 **Administrator:** use the Admin demo link in the footer, then Admin sign-in. Manage local users, booking statuses, and packages; read messages in Inbox. Administrator changes appear in traveler views in the same browser. They do not affect other visitors or devices.
 
-**Guest:** browse every public page. Booking, saved itinerary actions, and review submission lead to login and then return to the intended page. Registration always creates a traveler.
+**Guest:** choose Continue as guest to browse destinations, offers, flight/stay searches, galleries, and sample itineraries. This choice is remembered across pages, reloads, and new tabs in the same browser. Booking forms, My Bookings, saved itinerary actions, and review submission require login and then return to the intended page. Guest access creates no traveler account. Registration always creates a traveler; signing out returns to the login screen.
 
 The Home contact form is immediately before the footer. Its confirmation explicitly says that no email was sent.
 
@@ -43,7 +43,8 @@ The Home contact form is immediately before the footer. Its confirmation explici
 
 | Page | Purpose |
 | --- | --- |
-| `index.html`, `login.html` | Registration, login, guest access |
+| `index.html`, `login.html` | Login-first entry and remembered guest access |
+| `register.html` | Create a traveler account |
 | `home.html` | Editorial introduction, discovery, reviews, contact |
 | `destinations.html` | Search, filters, sorting, horizontal destination and activity carousels |
 | `destination.html?id=bali` | Destination story, gallery, package links |
@@ -66,13 +67,13 @@ npm run check
 npm run test:browser
 ```
 
-The browser suite starts the server if needed. Results and coverage boundaries are in [TESTING.md](docs/TESTING.md). Screenshots include [mobile Home](docs/screenshots/home-390.png), [registration](docs/screenshots/index-390.png), [booking](docs/screenshots/booking-390.png), and [administration](docs/screenshots/admin-390.png).
+The browser suite starts the server if needed. Results and coverage boundaries are in [TESTING.md](docs/TESTING.md). Screenshots include [mobile Home](docs/screenshots/home-390.png), [login](docs/screenshots/index-390.png), [registration](docs/screenshots/register-390.png), [flights](docs/screenshots/flights-1440.png), [gallery](docs/screenshots/gallery-1440.png), [booking](docs/screenshots/booking-390.png), and [administration](docs/screenshots/admin-390.png).
 
 ## Project structure
 
 ```text
 dist/                  Website served directly; no build step
-  *.html               Fourteen real page entrypoints
+  *.html               Fifteen real page entrypoints
   assets/              Shared CSS, licensed local fonts, original WebP imagery
   js/                  Native modules for UI, data, auth, storage, and behavior
 scripts/               Local server, asset optimization, checks, Figma recipes
@@ -84,7 +85,7 @@ Start with [MVP](docs/MVP.md), [app flow](docs/APP-FLOW.md), [tech stack](docs/T
 
 ## Design and limitations
 
-DM Serif Display and Manrope are packaged locally with their SIL Open Font licenses. The palette combines light blue `#BDE8F3`, dark pink `#A62963`, ivory, and dark ink. Eighteen original generated destination/activity images are documented in [image provenance](docs/IMAGE-PROVENANCE.md).
+DM Serif Display and Manrope are packaged locally with their SIL Open Font licenses. The palette combines light blue `#BDE8F3`, dark pink `#A62963`, olive `#626C3E`, ivory, and dark ink. Home chapter links connect discovery, planning, and stories; gentle sliding reveals respect reduced-motion preferences. Scenic flight postcards and six editorial photo journals reuse the original imagery. Eighteen original generated destination/activity images are documented in [image provenance](docs/IMAGE-PROVENANCE.md).
 
 Figma contains sixteen editable desktop/mobile compositions, reusable components, color/spacing variables, and text styles. [Figma handoff](docs/FIGMA.md) documents the screens and known differences. The existing file’s outer title still uses the provisional name; its design page and content are branded Miles & Moments.
 

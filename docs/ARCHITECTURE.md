@@ -2,7 +2,7 @@
 
 ## Rendering
 
-Each HTML entrypoint declares a page key and loads the shared stylesheet and `js/app.js` module. The application initializes the demo dataset, renders the relevant page, attaches handlers, then initializes galleries and horizontal rails. Navigation uses normal HTML links; there is no client-side router.
+Each HTML entrypoint declares a page key and loads the shared stylesheet and `js/app.js` module. The application initializes the demo dataset, checks account/guest access before rendering any content page, attaches handlers, then initializes galleries, horizontal rails, and scroll reveals. My Bookings additionally requires an active account. Restored browser-history pages recheck access. Navigation uses normal HTML links; there is no client-side router.
 
 ## Module boundaries
 
@@ -15,6 +15,7 @@ Each HTML entrypoint declares a page key and loads the shared stylesheet and `js
 | `pages.js` | Public page renderers and merged package catalog |
 | `actions.js` | Dialogs, protected actions, booking, contact, cancellation, itinerary editing |
 | `carousel.js` | Gallery lifecycle, playback, gestures, reduced motion, rail controls |
+| `motion.js` | One-time IntersectionObserver reveals, chapter navigation highlighting, reduced-motion and focus handling |
 | `admin.js` | Administrator guard, tabs, user/package/booking/inbox mutations |
 | `app.js` | Boot, page dispatch, form/search binding, cross-tab refresh |
 
@@ -33,7 +34,7 @@ messages[]    id, name, email, topic, message, created, read
 packages      packageId → destination, name, price, days, active, deleted
 ```
 
-`mm-session` in sessionStorage holds the selected user ID. `mm-gallery-pauses` preserves gallery pause choices within a tab. Neither stores a real authentication token.
+`mm-session` in sessionStorage holds the selected user ID. `mm-gallery-pauses` preserves gallery pause choices within a tab. Neither stores a real authentication token. `miles-moments:guest:v1` holds the literal `guest` preference in localStorage, falling back to sessionStorage if necessary. It grants browsing only; `currentUser()` and booking guards never treat it as an account. Login and logout clear this guest preference.
 
 Updates clone the state, apply a change, write storage, then commit the in-memory snapshot. A failed write does not commit the snapshot. Other tabs on the same origin reload when the main dataset changes. This is not a transactional multi-user database; concurrent edits can overwrite one another.
 

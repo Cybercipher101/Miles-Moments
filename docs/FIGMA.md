@@ -32,3 +32,7 @@ The editable compositions share the implemented content hierarchy, typography, p
 The file’s outer title remains **Roamly — Travel Website & Design System**. The connector cannot rename files, and the available Figma browser session is signed out. A signed-in file editor can rename it **Miles & Moments** from the title menu. The design page, content, and repository already use the final brand.
 
 The second page retains an editable HTML capture as an implementation reference. Scripts in `scripts/figma-*.txt` preserve the authoring recipes; run them only through the Figma Plugin API workflow with the saved state ledger, not with Node.
+
+## 21 October implementation update
+
+The browser now includes login-first entry, a separate registration page, persistent guest browsing, olive tokens, Home chapter navigation/reveals, scenic flight postcards, and editorial gallery journals. This code update has not yet been mirrored into the sixteen Figma compositions; current browser screenshots and UI-UX.md are authoritative for these additions.
