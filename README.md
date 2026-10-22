@@ -83,6 +83,8 @@ docs/                  Product, architecture, design, provenance, and test recor
 
 Start with [MVP](docs/MVP.md), [app flow](docs/APP-FLOW.md), [tech stack](docs/TECH-STACK.md), [architecture](docs/ARCHITECTURE.md), and [project memory](docs/MEMORY.md) when extending the project.
 
+The fifteen HTML files in `dist/` provide page entrypoints. Styling lives in `dist/assets/styles.css` and `dist/assets/experience.css`; vanilla JavaScript modules render shared/page markup and handle interactions. GitHub normally excludes `dist/` from language statistics, so `.gitattributes` explicitly identifies this directory as project source. No file languages are relabeled.
+
 ## Design and limitations
 
 DM Serif Display and Manrope are packaged locally with their SIL Open Font licenses. The palette combines light blue `#BDE8F3`, dark pink `#A62963`, olive `#626C3E`, ivory, and dark ink. Home chapter links connect discovery, planning, and stories; gentle sliding reveals respect reduced-motion preferences. Scenic flight postcards and six editorial photo journals reuse the original imagery. Eighteen original generated destination/activity images are documented in [image provenance](docs/IMAGE-PROVENANCE.md).
