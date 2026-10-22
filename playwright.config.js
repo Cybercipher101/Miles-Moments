@@ -13,10 +13,18 @@ export default defineConfig({
     screenshot: "only-on-failure",
     trace: "retain-on-failure",
   },
-  webServer: {
-    command: "node scripts/serve.mjs",
-    url: "http://localhost:5500",
-    reuseExistingServer: true,
-    timeout: 15000,
-  },
+  webServer: [
+    {
+      command: "node scripts/serve.mjs",
+      url: "http://localhost:5500",
+      reuseExistingServer: true,
+      timeout: 15000,
+    },
+    {
+      command: "node scripts/preview-docs.mjs",
+      url: "http://localhost:5502",
+      reuseExistingServer: true,
+      timeout: 15000,
+    },
+  ],
 });

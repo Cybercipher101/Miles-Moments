@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="360" viewBox="0 0 1200 360" role="img" aria-labelledby="title desc">
+  <title id="title">Miles &amp; Moments — a little curiosity, a world of possibilities</title>
+  <desc id="desc">A travel-journal cover in pale blue, dark pink, ivory, and olive, with a compass, route, and ticket.</desc>
+  <defs><linearGradient id="paper" x2="1" y2=".6"><stop stop-color="#BDE8F3"/><stop offset=".58" stop-color="#F5F1EB"/><stop offset="1" stop-color="#E9C7D6"/></linearGradient></defs>
+  <rect width="1200" height="360" rx="24" fill="url(#paper)"/>
+  <path d="M0 302Q238 201 491 308T1200 279" fill="none" stroke="#fff" stroke-width="42" opacity=".3"/>
+  <g transform="translate(48 44)" fill="none" stroke="#A62963" stroke-width="2"><circle cx="20" cy="20" r="20"/><path d="m29 11-5 13-13 5 5-13Z"/></g>
+  <text x="104" y="70" font-family="Arial,sans-serif" font-size="13" letter-spacing="3" fill="#47512F">THE BEAUTIFULLY CURIOUS TRAVEL CLUB</text>
+  <text x="48" y="158" font-family="Georgia,serif" font-size="69" fill="#243D3E">Miles <tspan fill="#A62963">&amp;</tspan> Moments</text>
+  <text x="51" y="202" font-family="Georgia,serif" font-size="28" fill="#47512F">Go places. Feel more.</text>
+  <text x="51" y="239" font-family="Arial,sans-serif" font-size="17" fill="#405659">A thoughtful travel frontend, made for your next chapter.</text>
+  <g font-family="Arial,sans-serif" font-size="12" font-weight="700" letter-spacing="1">
+    <rect x="48" y="278" width="91" height="34" rx="17" fill="#FCFBF8"/><text x="73" y="300" fill="#84204F">HTML</text>
+    <rect x="151" y="278" width="77" height="34" rx="17" fill="#FCFBF8"/><text x="176" y="300" fill="#84204F">CSS</text>
+    <rect x="240" y="278" width="177" height="34" rx="17" fill="#FCFBF8"/><text x="259" y="300" fill="#84204F">VANILLA JAVASCRIPT</text>
+  </g>
+  <g transform="translate(810 70) rotate(4 160 110)">
+    <rect width="326" height="224" rx="14" fill="#FCFBF8" stroke="#C6CDB7"/>
+    <path d="M0 164H326" stroke="#AAB88D" stroke-dasharray="4 6"/>
+    <circle cx="0" cy="164" r="9" fill="#EEDFE2"/><circle cx="326" cy="164" r="9" fill="#E8CED8"/>
+    <text x="25" y="35" font-family="Arial,sans-serif" font-size="10" letter-spacing="2" fill="#626C3E">YOUR BOARDING PASS TO POSSIBILITY</text>
+    <text x="25" y="96" font-family="Georgia,serif" font-size="41" fill="#243D3E">HERE</text><text x="208" y="96" font-family="Georgia,serif" font-size="41" fill="#A62963">NEXT</text>
+    <path d="M142 78H187m-8-6 8 6-8 6" stroke="#626C3E" stroke-width="2" fill="none"/>
+    <text x="25" y="130" font-family="Arial,sans-serif" font-size="12" fill="#617073">6 places · 18 original views · your own pace</text>
+    <text x="25" y="199" font-family="Arial,sans-serif" font-size="11" letter-spacing="1" fill="#47512F">LOCAL DEMO / NO REAL BOOKINGS</text>
+    <path d="M288 184v18m5-18v18m7-18v18" stroke="#A62963" stroke-width="2"/>
+  </g>
+</svg>

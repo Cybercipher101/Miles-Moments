@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#FCFBF8" />
+    <title>The visual notebook · Miles &amp; Moments</title>
+    <link rel="icon" href="../dist/assets/favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="assets/showcase.css" />
+    <script src="assets/showcase.js" defer></script>
+  </head>
+  <body>
+    <a class="skip" href="#screens">Skip to screenshots</a>
+    <header class="shell header">
+      <a class="brand" href="showcase.html">✧ Miles <i>&amp;</i> Moments</a
+      ><a
+        class="text-link"
+        href="https://github.com/Cybercipher101/Miles-Moments#readme"
+        >Read the guide ↗</a
+      >
+    </header>
+    <main class="shell">
+      <section class="intro">
+        <div>
+          <p class="eyebrow">A LITTLE LOOK BEHIND THE JOURNEY</p>
+          <h1>The visual<br /><em>notebook.</em></h1>
+          <p>
+            Desktop dreams. Pocket-sized moments.<br />A collection of screens,
+            made to explore at your pace.
+          </p>
+        </div>
+        <aside class="paper-ticket">
+          <span class="star" aria-hidden="true">✳</span>
+          <p class="eyebrow">INSIDE THE COLLECTION</p>
+          <strong>15 pages.<br />One connected journey.</strong>
+          <p>
+            Original imagery · Local fonts<br />HTML, CSS &amp; vanilla
+            JavaScript
+          </p>
+          <span class="ticket-bottom">SOURCE → SCREEN → STORY</span>
+        </aside>
+      </section>
+      <section id="screens" aria-label="Screenshot collection">
+        <div class="filter-card">
+          <div class="filter-top">
+            <div>
+              <p class="eyebrow">PICK A LITTLE PERSPECTIVE</p>
+              <div class="chips" role="group" aria-label="Screen size">
+                <button type="button" data-device="all" aria-pressed="true">
+                  ✦ All views</button
+                ><button
+                  type="button"
+                  data-device="desktop"
+                  aria-pressed="false"
+                >
+                  ▱ Desktop</button
+                ><button
+                  type="button"
+                  data-device="mobile"
+                  aria-pressed="false"
+                >
+                  ♡ Mobile
+                </button>
+              </div>
+            </div>
+            <label class="search"
+              >Find a screen<input
+                id="search"
+                type="search"
+                placeholder="Try gallery, login, or booking…"
+            /></label>
+          </div>
+          <div class="filter-bottom">
+            <label
+              >Chapter<select id="chapter">
+                <option value="all">Every chapter</option>
+                <option value="welcome">Welcome</option>
+                <option value="discover">Discover</option>
+                <option value="plan">Plan a journey</option>
+                <option value="admin">Admin desk</option>
+              </select></label
+            ><button id="reset" class="text-link" type="button">
+              Reset filters
+            </button>
+            <p id="count" role="status"></p>
+          </div>
+        </div>
+        <div id="cards" class="cards"></div>
+        <div id="empty" class="empty" hidden>
+          <span aria-hidden="true">✳</span>
+          <h2>No postcards here just yet.</h2>
+          <p>Try a different word or reset your filters.</p>
+          <button type="button" id="empty-reset">Show every screen</button>
+        </div>
+        <noscript
+          ><p>
+            Enable JavaScript to filter the album, or
+            <a
+              href="https://github.com/Cybercipher101/Miles-Moments/tree/main/docs/screenshots"
+              >browse the screenshot files</a
+            >.
+          </p></noscript
+        >
+      </section>
+      <section class="palette-note">
+        <div>
+          <p class="eyebrow">THE LITTLE DETAILS</p>
+          <h2>Soft colors. Clear intentions.</h2>
+          <p>
+            DM Serif Display brings the journal character. Manrope keeps the
+            small things readable.
+          </p>
+        </div>
+        <img
+          src="assets/palette.svg"
+          width="1000"
+          height="150"
+          alt="Sky, pink, olive, ivory, and ink color palette"
+          loading="lazy"
+        />
+      </section>
+      <footer>
+        <p>
+          These are screenshots of a browser-local demo, not live booking
+          services.
+        </p>
+        <p>
+          Captured in Chromium ·
+          <a
+            href="https://github.com/Cybercipher101/Miles-Moments/blob/main/docs/VISUAL-CHECKS.md"
+            >Visual check record ↗</a
+          >
+        </p>
+      </footer>
+    </main>
+    <dialog id="viewer" aria-labelledby="viewer-title">
+      <div class="viewer-heading">
+        <h2 id="viewer-title"></h2>
+        <button type="button" id="close" aria-label="Close screenshot">
+          ✕
+        </button>
+      </div>
+      <p id="viewer-note"></p>
+      <div class="full-screenshot"><img id="full-image" alt="" /></div>
+    </dialog>
+  </body>
+</html>

@@ -1,6 +1,6 @@
 # Project memory
 
-Last updated: 21 October 2026.
+Last updated: 22 October 2026.
 
 ## Decisions to preserve
 
@@ -29,7 +29,11 @@ The 21 October update adds olive accents, Home chapter navigation and scroll rev
 
 ## Verification and maintenance
 
+The 22 October documentation update expands README setup, role explanations, code navigation, and troubleshooting; adds local SVG cover/palette artwork and a filterable screenshot album in `docs/showcase.html`. `npm run preview:docs` serves only album assets on localhost:5502. Preserve GitHub-compatible Markdown; custom typography and interactive filters live in the album. Documentation evidence and the three dedicated browser tests are recorded in VISUAL-CHECKS.md. Application source under `dist/` was unchanged.
+
 Use `npm test`, `npm run check`, and `npm run test:browser`. Read TESTING.md for actual results and coverage limitations before claiming broader support. Preserve keyboard focus and reduced-motion behavior when changing galleries.
+
+Use `npm run check:docs` for README references and `npx playwright test tests/docs.spec.js` for the album and representative screenshot refresh. The full browser command now includes the 23 application tests plus 3 documentation tests; the latest documentation run alone is not a new full application acceptance run.
 
 Treat `dist` as authored source. Editing generated HTML shell metadata also requires updating `scripts/create-pages.mjs`. Do not commit node_modules, browser profiles, temporary screenshots/traces, generated PNG masters, `.env` files, or hosting credentials.
 
