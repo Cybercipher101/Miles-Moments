@@ -1,0 +1,53 @@
+name: Publish Node.js Package to GitHub Packages
+
+on:
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Preview the package without publishing"
+        required: true
+        default: true
+        type: boolean
+
+permissions:
+  contents: read
+
+concurrency:
+  group: github-packages-publish
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    if: github.repository == 'Cybercipher101/Miles-Moments' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+      - name: Check and prepare the package
+        id: package
+        uses: ./.github/actions/prepare-package
+        with:
+          registry: github
+          package-name: "@cybercipher101/miles-moments"
+      - name: Configure GitHub Packages authentication
+        uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version: "24"
+          registry-url: https://npm.pkg.github.com
+          scope: "@cybercipher101"
+      - name: Preview publication
+        if: inputs.dry_run
+        env:
+          TARBALL: ${{ steps.package.outputs.tarball }}
+        run: npm publish "$TARBALL" --dry-run --ignore-scripts --registry=https://npm.pkg.github.com
+      - name: Publish to GitHub Packages
+        if: ${{ !inputs.dry_run }}
+        env:
+          TARBALL: ${{ steps.package.outputs.tarball }}
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: npm publish "$TARBALL" --ignore-scripts --registry=https://npm.pkg.github.com

@@ -1,0 +1,51 @@
+name: Check and prepare Miles & Moments
+description: Validate the frontend and create an inspectable static-site package.
+inputs:
+  registry:
+    description: npm or github
+    required: true
+  package-name:
+    description: Scoped package name
+    required: true
+outputs:
+  tarball:
+    description: Repository-relative archive path
+    value: ${{ steps.pack.outputs.tarball }}
+  hashes:
+    description: Base64 SHA256 subjects for the SLSA generator
+    value: ${{ steps.pack.outputs.hashes }}
+runs:
+  using: composite
+  steps:
+    - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+      with:
+        node-version: "24"
+        cache: npm
+    - name: Ensure a trusted-publishing-capable npm version
+      shell: bash
+      run: npm install --global npm@11.16.0 --ignore-scripts
+    - name: Install development tooling
+      shell: bash
+      run: npm ci
+    - name: Validate application, documentation, and package boundaries
+      shell: bash
+      run: |
+        npm test
+        npm run check
+        npm run check:docs
+        npm run test:package
+    - name: Create the package and its digest
+      id: pack
+      shell: bash
+      env:
+        PACKAGE_NAME: ${{ inputs.package-name }}
+        PACKAGE_REGISTRY: ${{ inputs.registry }}
+      run: npm run package:preview
+    - name: Save the package for inspection
+      uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+      with:
+        name: miles-moments-package
+        path: ${{ steps.pack.outputs.tarball }}
+        include-hidden-files: true # The exact archive lives inside the ignored .cache directory.
+        if-no-files-found: error
+        retention-days: 14

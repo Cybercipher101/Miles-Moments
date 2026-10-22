@@ -1,0 +1,38 @@
+name: SLSA Generic generator
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    if: github.repository == 'Cybercipher101/Miles-Moments' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    outputs:
+      hashes: ${{ steps.package.outputs.hashes }}
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+      - name: Check and prepare the archive
+        id: package
+        uses: ./.github/actions/prepare-package
+        with:
+          registry: npm
+          package-name: "@cybercipher101/miles-moments"
+
+  provenance:
+    needs: build
+    permissions:
+      contents: write # Required by the reusable generator; release upload stays disabled below.
+      actions: read
+      id-token: write
+    # SLSA verification requires an exact version tag instead of a commit SHA.
+    uses: slsa-framework/slsa-github-generator/.github/workflows/generator_generic_slsa3.yml@v2.1.0
+    with:
+      base64-subjects: ${{ needs.build.outputs.hashes }}
+      provenance-name: miles-moments.intoto.jsonl
+      upload-assets: false

@@ -13,7 +13,9 @@
     "test:browser": "playwright test",
     "check": "node scripts/check.mjs",
     "check:docs": "node scripts/check-docs.mjs",
-    "preview:docs": "node scripts/preview-docs.mjs"
+    "preview:docs": "node scripts/preview-docs.mjs",
+    "package:preview": "node scripts/package-release.mjs",
+    "test:package": "node --test tests/package.test.mjs"
   },
   "devDependencies": {
     "@playwright/test": "^1.56.0",

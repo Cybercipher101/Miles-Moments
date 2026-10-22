@@ -31,6 +31,7 @@ async function checkLink(from, value) {
 for (const name of [
   "README.md",
   "docs/VISUAL-CHECKS.md",
+  "docs/WORKFLOWS.md",
   "docs/showcase.html",
 ]) {
   const file = path.join(root, name);
@@ -56,6 +57,7 @@ for (const name of [
   "docs/assets/showcase.js",
   "scripts/preview-docs.mjs",
   "scripts/check-docs.mjs",
+  "scripts/package-release.mjs",
 ]) {
   const result = spawnSync(
     process.execPath,

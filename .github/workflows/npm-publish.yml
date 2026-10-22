@@ -1,0 +1,52 @@
+name: Publish Node.js Package to npm
+
+on:
+  workflow_dispatch:
+    inputs:
+      package_name:
+        description: "Scoped npm name you own (for example @your-name/miles-moments)"
+        required: true
+        default: "@cybercipher101/miles-moments"
+        type: string
+      dry_run:
+        description: "Preview the package without publishing"
+        required: true
+        default: true
+        type: boolean
+
+permissions:
+  contents: read
+
+concurrency:
+  group: npm-publish
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    if: github.repository == 'Cybercipher101/Miles-Moments' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+      - name: Check and prepare the package
+        id: package
+        uses: ./.github/actions/prepare-package
+        with:
+          registry: npm
+          package-name: ${{ inputs.package_name }}
+      - name: Preview publication
+        if: inputs.dry_run
+        env:
+          TARBALL: ${{ steps.package.outputs.tarball }}
+        run: npm publish "$TARBALL" --dry-run --ignore-scripts --access public --registry=https://registry.npmjs.org
+      # Configure this workflow as a trusted publisher in the npm package settings.
+      - name: Publish using npm trusted publishing
+        if: ${{ !inputs.dry_run }}
+        env:
+          TARBALL: ${{ steps.package.outputs.tarball }}
+        run: npm publish "$TARBALL" --ignore-scripts --provenance --access public --registry=https://registry.npmjs.org

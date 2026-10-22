@@ -29,6 +29,8 @@ The 21 October update adds olive accents, Home chapter navigation and scroll rev
 
 ## Verification and maintenance
 
+The 22 October workflow update adds three manual GitHub Actions workflows: npm publication through trusted publishing, GitHub Packages through GITHUB_TOKEN, and generic SLSA archive provenance. Publishing defaults to dry run; no push/release trigger, website deployment, or registry publication is enabled by adding the files. Keep the root package private. `scripts/package-release.mjs` stages only tracked website files and the local server in `.cache/`, with a scoped registry-specific manifest and preserved font licenses. Read WORKFLOWS.md for setup and actual validation limits. No project license has been chosen; generated packages use UNLICENSED.
+
 The 22 October documentation update expands README setup, role explanations, code navigation, and troubleshooting; adds local SVG cover/palette artwork and a filterable screenshot album in `docs/showcase.html`. `npm run preview:docs` serves only album assets on localhost:5502. Preserve GitHub-compatible Markdown; custom typography and interactive filters live in the album. Documentation evidence and the three dedicated browser tests are recorded in VISUAL-CHECKS.md. Application source under `dist/` was unchanged.
 
 Use `npm test`, `npm run check`, and `npm run test:browser`. Read TESTING.md for actual results and coverage limitations before claiming broader support. Preserve keyboard focus and reduced-motion behavior when changing galleries.

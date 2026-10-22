@@ -266,6 +266,14 @@ Open `http://localhost:5503`. Browser tests expect port 5500; use the default po
 
 </details>
 
+## A small automation desk
+
+The three suggested GitHub Actions workflows are ready: **Publish Node.js Package to npm**, **Publish Node.js Package to GitHub Packages**, and **SLSA Generic generator**. Open [Actions](https://github.com/Cybercipher101/Miles-Moments/actions), choose a workflow, and run it on `main`.
+
+Both publishing workflows start with **Preview the package without publishing** checked. They produce an inspectable archive; npm publishing additionally needs your npm package's trusted-publisher setup. SLSA creates provenance for its own archive. These workflows distribute files and keep the website's local-preview setup intact.
+
+See the [beginner workflow guide](docs/WORKFLOWS.md) for setup, package versions, downloads, and limits. To preview an archive locally, run `npm run package:preview`; to test packaging, run `npm run test:package`. No package has been published by this update.
+
 ## The project notebook
 
 | Curious about… | Read this |
@@ -275,6 +283,7 @@ Open `http://localhost:5503`. Browser tests expect port 5500; use the default po
 | How it is built | [Tech stack](docs/TECH-STACK.md) · [Architecture](docs/ARCHITECTURE.md) |
 | Colors, typography, interactions | [UI/UX guide](docs/UI-UX.md) |
 | What was tested | [Testing](docs/TESTING.md) · [Visual checks](docs/VISUAL-CHECKS.md) |
+| Manual publishing and provenance | [GitHub Actions guide](docs/WORKFLOWS.md) |
 | Decisions to preserve | [Project memory](docs/MEMORY.md) |
 | Image origins | [Image provenance](docs/IMAGE-PROVENANCE.md) |
 | Editable layouts and differences | [Figma handoff](docs/FIGMA.md) · [Open Figma](https://www.figma.com/design/RhMcGbJ8l4bVz4xKMs9S78?node-id=5-84) |

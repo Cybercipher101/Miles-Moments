@@ -63,6 +63,8 @@ Saved browser evidence is in `docs/screenshots/`. Figma reference images and the
 
 ## Limits of the evidence
 
+**Workflow update, 22 October:** three package integration tests and the six application unit tests passed. The packaging tests build archives for npm and GitHub Packages, check hashes, runtime files, images, font licenses, absent development dependencies, unchanged private root manifest, and rejection of invalid names/registries. Source checks, documentation references, and actionlint 1.7.12 passed. Both registry publishing commands completed in dry-run mode, with expected unauthenticated warnings. Publishing commands are configured for manual dry runs by default; registry publication and GitHub-hosted SLSA signing have not been executed. No application UI changed, so browser acceptance was not rerun for this update. See [WORKFLOWS.md](WORKFLOWS.md).
+
 **Documentation update, 22 October:** three additional tests in `tests/docs.spec.js` passed for the screenshot album and representative image refresh. The full browser suite now contains 26 tests; only the three documentation tests were rerun for that documentation-only update. See [VISUAL-CHECKS.md](VISUAL-CHECKS.md) for the separate README rendering checks and visual artifacts.
 
 This is Chromium automation with emulated touch layouts, not real-device coverage. Safari, Firefox, iOS/Android hardware, screen-reader evaluation, and a formal WCAG or performance audit were not run. Native background-tab throttling and trackpad gestures remain manual checks; the implementation includes visibility and intersection pausing without wheel interception.
